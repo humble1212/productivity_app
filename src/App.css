@@ -1,3 +1,54 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/*# sourceMappingURL=App.css.map */
+.activeElement,
+.more--menu {
+  transition: 0.5s ease-in-out;
+}
+.activeElement:active,
+.more--menu:active {
+  transform: translateY(2px);
+}
+.notify-count::after {
+  content: attr(data-count);
+  position: absolute;
+  top: -3.5px;
+  left: 16.5px;
+  width: 20px;
+  height: 20px;
+  font-size: bold;
+  line-height: 20px;
+  text-align: center;
+  color: red;
+  font-weight: 700;
+  transform: translate(-50%, -50%);
+}
+
+.more--menu:hover:after {
+  position: absolute;
+  top: -3.5px;
+  left: 16.5px;
+  width: max-content;
+  height: 20px;
+  font-size: 13px;
+  line-height: 20px;
+  text-align: center;
+  color: rgb(3, 26, 26);
+  font-weight: 700;
+  transform: translate(-50%, -50%);
+}
+
+.about--menu:hover::after {
+  content: "About us";
+}
+.contact--menu:hover::after {
+  content: "Contact us";
+}
+.explore--menu:hover::after {
+  content: " Explore";
+}
+.donate--menu:hover::after {
+  content: " Donate";
+}
