@@ -9,37 +9,40 @@
 }
 .activeElement:active,
 .more--menu:active {
-  transform: translateY(2px);
+  transform: translateY(5px);
 }
 .notify-count::after {
   content: attr(data-count);
   position: absolute;
-  top: -3.5px;
-  left: 16.5px;
+  top: 5px;
+  left: 22.5px;
   width: 20px;
   height: 20px;
   font-size: bold;
   line-height: 20px;
   text-align: center;
-  color: red;
+  color: tomato;
   font-weight: 700;
   transform: translate(-50%, -50%);
 }
 
-.more--menu:hover:after {
+.more--menu:hover:after,
+.more--option:hover:after {
   position: absolute;
-  top: -3.5px;
-  left: 16.5px;
+  top: -6.5px;
+  left: 10px;
   width: max-content;
   height: 20px;
-  font-size: 13px;
+  font-size: 12px;
   line-height: 20px;
   text-align: center;
-  color: rgb(3, 26, 26);
+  color: whitesmoke;
   font-weight: 700;
   transform: translate(-50%, -50%);
 }
-
+.more--option:hover:after {
+  color: tomato;
+}
 .about--menu:hover::after {
   content: "About us";
 }
@@ -51,4 +54,38 @@
 }
 .donate--menu:hover::after {
   content: " Donate";
+}
+
+.Tittle--menu:hover::after {
+  content: "Title";
+}
+.category--menu:hover::after {
+  content: "Category";
+}
+.alarm-menu:hover::after {
+  content: "Alarm";
+}
+.date--menu:hover::after {
+  content: "Date";
+}
+.repeat--menu:hover::after {
+  content: "Repeat";
+}
+
+.footer--shadow {
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+@keyframes animatePages {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+    height: auto;
+  }
+}
+
+.show--frame {
+  animation: animatePages 0.5s ease-in-out;
 }
