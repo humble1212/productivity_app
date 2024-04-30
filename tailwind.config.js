@@ -22,8 +22,8 @@ module.exports = {
     extend: {
       height: {
         chgt: "69%",
-        Ahgt: "77dvh",
-        mhgt: "65dvh",
+        Ahgt: "76dvh",
+        mhgt: "60dvh",
       },
     },
   },

@@ -42,6 +42,8 @@
 }
 .more--option:hover:after {
   color: tomato;
+  top: -8px;
+  left: 15px;
 }
 .about--menu:hover::after {
   content: "About us";
@@ -88,4 +90,23 @@
 
 .show--frame {
   animation: animatePages 0.5s ease-in-out;
+}
+/* width */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: white;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: tomato;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: white;
 }
