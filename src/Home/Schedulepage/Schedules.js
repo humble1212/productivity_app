@@ -99,16 +99,13 @@ export default function Schedules() {
   const totalUrgent = taskData.filter((task) => task.urgent === true).length;
 
   useEffect(() => {
+    if (taskData.length === 0) return;
     localStorage.setItem("taskData", JSON.stringify(taskData));
   }, [taskData]);
 
   useEffect(() => {
-    if (localStorage.getItem("taskData") === null) {
-      localStorage.setItem("taskData", JSON.stringify([]));
-    } else {
-      let taskData = JSON.parse(localStorage.getItem("taskData"));
-      setTaskData(taskData);
-    }
+    let taskData = JSON.parse(localStorage.getItem("taskData"));
+    setTaskData(taskData);
   }, []);
 
   useEffect(() => {
@@ -132,7 +129,7 @@ export default function Schedules() {
   }, [taskData, status]);
 
   return (
-    <section className="w-full h-full p-2 relative">
+    <section className="w-full h-full p-1 relative sm:overflow-auto">
       <header className="h-auto w-full flex items-center justify-center sm:text-md">
         <ul className="w-full flex items-center justify-center gap-2 p-1 sm:flex-col">
           <li className="sm:w-full w-max flex items-center justify-center rounded-lg border p-1 shadow-2xl gap-4">
@@ -182,7 +179,7 @@ export default function Schedules() {
             return (
               <li
                 className={`sm:flex-col md:flex-col flex items-center justify-center w-full p-2 h-auto border rounded hover:shadow-lg my-4 gap-2 activeElement + ${
-                  data.done ? " bg-orange-200 opacity-50 " : ""
+                  data.done ? " bg-gray-400 opacity-50 " : ""
                 } + ${data.urgent ? " bg-teal-950 text-white" : ""}`}
                 onDoubleClick={() => {
                   setShowSideEditBar(!showSideEditBar);
@@ -339,7 +336,7 @@ export default function Schedules() {
             className=" flex-1 p-2 bg-transparent rounded focus:outline-1 outline-orange-200"
           />
         </div>
-        <div className="flex w-auto p-2 items-center justify-center gap-2 text-nowrap sm:bg-teal-950 sm:h-12 sm:rounded-2xl sm:text-white sm:w-full">
+        <div className="flex w-auto sm:p-1 p-2 items-center justify-center gap-2 text-nowrap sm:border sm:rounded sm:text-white sm:w-full">
           <span
             className="activeElement flex flex-1 items-center justify-center gap-2 Tittle--menu more--option relative border rounded w-8 h-8 text-lg bg-orange-500 text-white"
             onClick={() => {
@@ -927,7 +924,7 @@ function Taskrender(props) {
               {urgentCheck && <FaStar />}
               {!urgentCheck && <FaRegStar />}
             </span>
-            {props.data.urgent ? "Urgent" : "Normal"}
+            {props.data.urgent ? "Important" : "Normal"}
           </div>
         </div>
       </div>

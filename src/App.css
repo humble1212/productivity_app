@@ -84,7 +84,6 @@
   }
   100% {
     opacity: 1;
-    height: auto;
   }
 }
 
@@ -109,4 +108,20 @@
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: white;
+}
+
+.profile-styles {
+  position: absolute;
+  top: 5%;
+  left: 15%;
+  right: 15%;
+  height: auto;
+  display: flex;
+  justify-items: center;
+  align-items: center;
+  padding: 0.5rem;
+}
+
+.b--input::-webkit-scrollbar {
+  display: none;
 }
