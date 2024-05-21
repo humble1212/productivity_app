@@ -5,89 +5,90 @@ import { useState } from "react";
 import { IoMdAdd } from "react-icons/io";
 import { FaTasks } from "react-icons/fa";
 import { v4 as uuidv4 } from "uuid";
+import moment from "moment";
 
+// import { FaRegCircle } from "react-icons/fa6";
 import { AiOutlineEdit } from "react-icons/ai";
 import { FaTrash } from "react-icons/fa";
 
-export default function BudgetInput(props) {
+export default function ShoppingInput(props) {
   const [showStart, setShowStart] = useState(false);
-  const [showEnd, setShowEnd] = useState(false);
-  const [pDate, setPdate] = useState(false);
 
   const [showAdd, setShowAdd] = useState(false);
   const [excessError, setExcessError] = useState(false);
   const [incomeError, setIncomeError] = useState(false);
 
   const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
-  const [preparedDate, setPreparedDate] = useState(new Date());
-  const [budgetIncome, setBudgetIncome] = useState("");
+  const [shoppingAmount, setShoppingAmount] = useState("");
   const [timeline, setTimeline] = useState("");
   const [label, setLabel] = useState("");
-  const [datePicker, setDatePicker] = useState(false);
-  const [customTimeLine, setCustomTimeLine] = useState(false);
-  const [customeLabel, setCustomelabel] = useState(false);
 
   const onStart = (startDate) => {
     setStartDate(startDate);
     setShowStart(false);
   };
-  const onPrepare = (preparedDate) => {
-    setPreparedDate(preparedDate);
-    setPdate(false);
-  };
-
-  const onEnd = (endDate) => {
-    setEndDate(endDate);
-    setShowEnd(false);
-  };
-  const ValidityPeriod = endDate.getTime() - startDate.getTime();
-  const numberOfDays = Math.round(ValidityPeriod / (1000 * 60 * 60 * 24));
 
   const [detailsList, setDetailslist] = useState([]);
   const [item, setItem] = useState("");
+  const [quantity, setQuantity] = useState("");
   const [Allocated, setAllocated] = useState(0.0);
   const [count, setCount] = useState(0);
 
-  const detailDispatch = (count, item, Allocated, budgetIncome) => {
+  const detailDispatch = (count, item, Allocated, quantity, shoppingAmount) => {
     const renderDetails = {
       id: uuidv4(),
       count: count,
       item: item,
       Allocated: Allocated,
-      budgetIncome: budgetIncome,
+      quantity: quantity,
+      shoppingAmount: shoppingAmount,
+      purchasedItems: false,
+      expand: false,
     };
     setDetailslist([...detailsList, renderDetails]);
   };
+  const detTotal = detailsList.length;
 
+  const totalLeft = detailsList.filter(
+    (item) => item.purchasedItems === false
+  ).length;
+
+  // const amountSpent = ;
   const [totalSpend, setTotalSpend] = useState(0);
-  const Balance = budgetIncome - totalSpend;
+  const Balance = shoppingAmount - totalSpend;
 
   const showAddButton = () => {
-    Allocated.length > 0 && !incomeError ? setShowAdd(true) : setShowAdd(false);
+    Allocated.length > 0 ? setShowAdd(true) : setShowAdd(false);
   };
   const commenceRendering = () => {
-    Balance > 0
-      ? detailDispatch(count, item, Allocated, budgetIncome, totalSpend)
-      : setExcessError(true);
+    !excessError &&
+      !incomeError &&
+      detailDispatch(count, item, Allocated, quantity, shoppingAmount);
   };
   const showExcessError = () => {
-    budgetIncome !== "" && Allocated > Balance
+    shoppingAmount !== "" && Allocated > Balance
       ? setExcessError(true)
       : setExcessError(false);
   };
   const showIncomeError = () => {
-    budgetIncome === ""
-      ? setIncomeError(true) && setShowAdd(false)
-      : setIncomeError(false);
+    shoppingAmount === "" ? setIncomeError(true) : setIncomeError(false);
+  };
+
+  const [preparedDate, setPreparedDate] = useState(new Date());
+  const [pDate, setPdate] = useState(false);
+  const onPrepare = (preparedDate) => {
+    setPreparedDate(preparedDate);
+    setPdate(false);
   };
 
   return (
     <section className=" w-full h-auto flex p-1">
       <div className="b--input flex flex-col items-start w-1/4 h-pHgt overflow-auto rounded p-2 border-r">
-        <div className=" w-full border-b border-orange-500 py-2 flex justify-between items-center font-bold">
-          <span className="text-xl">Budget description</span>
-          <span className=" text-md">{new Date().toDateString()}</span>
+        <div className=" w-full border-b border-orange-500 py-2 flex flex-col justify-between items-start gap-1">
+          <span className="text-xl font-bold">List description</span>
+          <span className=" text-sm">
+            Date Prepared: {new Date().toDateString()}
+          </span>
         </div>
         <ul className=" w-full mt-2 h-auto">
           <li className=" w-full flex items-center p-1 my-2 border-b border-green-900">
@@ -99,283 +100,203 @@ export default function BudgetInput(props) {
             className=" w-full flex flex-col items-start pb-1 my-2 overflow-hidden border-b border-green-900"
             style={{ height: "auto", transition: "300ms ease-in-out" }}>
             <div className="w-full h-auto flex flex-col font-semibold">
-              <div
-                className=" h-9 hover:rounded-md hover:px-2 cursor-pointer text-sm flex items-center  hover:shadow-xl hover:bg-green-200 activeElement"
+              <label
+                htmlFor="personal"
+                className=" h-9 hover:rounded-md hover:px-2 cursor-pointer text-sm flex items-center justify-between hover:shadow-xl hover:bg-green-200 activeElement"
                 style={{ transition: "300ms ease-in-out" }}>
-                <label htmlFor="project" className="flex-1">
-                  Project budget
-                </label>
+                <span> Personal </span>
                 <input
                   type="radio"
-                  name="Label"
-                  value={"Project budget"}
-                  id="project"
-                  onChange={(e) => {
-                    setLabel(e.target.value);
-                  }}
-                  className="p-2"
-                />
-              </div>
-
-              <div
-                className=" h-9 hover:rounded-md hover:px-2 cursor-pointer text-sm flex items-center hover:shadow-xl hover:bg-green-200 activeElement"
-                style={{ transition: "300ms ease-in-out" }}>
-                <label htmlFor="personal" className="flex-1">
-                  Personal budget
-                </label>
-                <input
-                  type="radio"
-                  name="Label"
-                  value={" Personal budget"}
                   id="personal"
+                  name="labels"
+                  value={"Personal Grocery List"}
                   onChange={(e) => {
                     setLabel(e.target.value);
                   }}
-                  className=" p-2"
                 />
-              </div>
-
-              <div
-                className=" h-9 hover:rounded-md hover:px-2 cursor-pointer text-sm flex items-center  hover:shadow-xl hover:bg-green-200 activeElement"
+              </label>
+              <label
+                htmlFor="Family"
+                className=" h-9 hover:rounded-md hover:px-2 cursor-pointer text-sm flex items-center justify-between hover:shadow-xl hover:bg-green-200 activeElement"
                 style={{ transition: "300ms ease-in-out" }}>
-                <label htmlFor="family" className="flex-1">
-                  Family budget
-                </label>
+                <span> Family </span>
                 <input
                   type="radio"
-                  name="Label"
-                  value={"Family budget"}
-                  id="family"
+                  id="Family"
+                  name="labels"
+                  value={"Family Grocery List"}
                   onChange={(e) => {
                     setLabel(e.target.value);
                   }}
-                  className=" p-2"
                 />
-              </div>
-              <div
-                className=" h-9 hover:rounded-md hover:px-2 cursor-pointer text-sm flex items-center hover:shadow-xl hover:bg-green-200 activeElement"
+              </label>
+              <label
+                htmlFor="Wedding"
+                className=" h-9 hover:rounded-md hover:px-2 cursor-pointer text-sm flex items-center justify-between hover:shadow-xl hover:bg-green-200 activeElement"
                 style={{ transition: "300ms ease-in-out" }}>
-                <label htmlFor="academics" className="flex-1">
-                  Academic budget
-                </label>
+                <span> Wedding </span>
                 <input
                   type="radio"
-                  name="Label"
-                  value={"Academics budget"}
-                  id="academics"
+                  id="Wedding"
+                  name="labels"
+                  value={"Wedding Grocery List"}
                   onChange={(e) => {
                     setLabel(e.target.value);
                   }}
-                  className=" p-2"
                 />
-              </div>
-              <div
-                className="mt-2 h-9 hover:rounded-md hover:p-2 cursor-pointer text-sm flex items-center gap-1 hover:shadow-xl hover:bg-green-200 activeElement"
-                style={{ transition: "300ms ease-in-out" }}
-                onClick={() => {
-                  setCustomelabel(true);
-                }}>
-                <span className=" w-max text-nowrap">+Add Custome Label</span>
-                {customeLabel && (
-                  <div className=" flex-1 flex items-center gap-1">
-                    <input
-                      type="text"
-                      name="customeLabel"
-                      id="customeLabel"
-                      placeholder="Enter Custom Label"
-                      value={label}
-                      onChange={(e) => {
-                        setLabel(e.target.value);
-                      }}
-                      className=" focus:outline-none flex-1 h-9 border rounded-lg p-2 text-gray-400 text-sm font-normal"
-                    />
-                    <button
-                      type="button"
-                      className=" w-9 h-8 px-2 flex items-center justify-center rounded-lg bg-teal-950 text-white"
-                      onClick={() => {
-                        setCustomelabel(!customeLabel);
-                      }}>
-                      <span>
-                        <IoMdAdd />
-                      </span>
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
-          </li>
-          <li className=" w-full flex flex-col gap-1 items-start pb-1 my-2 border-b border-green-900">
-            <div className=" w-full flex p-1 rounded h-10 item-center justify-between gap-2 relative">
-              <span className=" w-max flex items-center justify-start">
-                Date Prepared:
-              </span>
-              <p className=" flex-1 flex items-center justify-center font-semibold text-orange-900">
-                {preparedDate.toDateString()}
-              </p>
-
-              <button
-                type="button"
-                className=" w-9 h-8 px-2 flex items-center justify-center rounded-lg bg-gray-600 text-white"
-                onClick={() => {
-                  setPdate(!pDate);
-                  setShowEnd(false);
-                }}>
-                <span>
-                  <IoMdAdd />
-                </span>
-              </button>
-              {pDate && (
-                <span className="z-10 w-full flex items-center justify-center absolute top-10 left-1 right-1">
-                  <Calendar value={preparedDate} onChange={onPrepare} />
-                </span>
-              )}
-            </div>
-          </li>
-          <li className=" w-full flex flex-col gap-1 items-start pb-1 my-2 border-b border-green-900">
-            <label
-              htmlFor="Type"
-              className="flex flex-row items-center gap-2 h-8 text-gray-500 font-bold">
-              Select Budget TimeLine
-            </label>
-            <select
-              name="Type"
-              id="Type"
-              className=" focus:outline-none w-full h-9 border
-            rounded-lg p-2 text-gray-400 text-sm font-normal"
-              onChange={(e) => {
-                setTimeline(e.target.value);
-                e.target.value === "Today"
-                  ? setDatePicker(false)
-                  : setDatePicker(true);
-
-                e.target.value === "custome"
-                  ? setCustomTimeLine(true) && setDatePicker(true)
-                  : setCustomTimeLine(false);
-              }}>
-              <option value="Today">Today</option>
-              <option value="One Week">One Week</option>
-              <option value="Bi-Weekly">Bi-Weekly</option>
-              <option value="One Month">One Month</option>
-              <option value="Two Months">Two Months</option>
-              <option value="Three Months">Three Months</option>
-              <option value="Four Months">Four Months</option>
-              <option value="Six Months">Six Months</option>
-              <option value="A Year or More">A Year or More</option>
-              <option value="custome">Add Custome Timeline</option>
-            </select>
-
-            {customTimeLine && (
-              <form
-                className=" w-full h-auto flex items-center justify-center gap-2 pr-2"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                }}>
+              </label>
+              <label
+                htmlFor="Funeral"
+                className=" h-9 hover:rounded-md hover:px-2 cursor-pointer text-sm flex items-center justify-between hover:shadow-xl hover:bg-green-200 activeElement"
+                style={{ transition: "300ms ease-in-out" }}>
+                <span> Funeral </span>
+                <input
+                  type="radio"
+                  id="Funeral"
+                  name="labels"
+                  value={"Funeral Grocery List"}
+                  onChange={(e) => {
+                    setLabel(e.target.value);
+                  }}
+                />
+              </label>
+              <label
+                htmlFor="Party"
+                className=" h-9 hover:rounded-md hover:px-2 cursor-pointer text-sm flex items-center justify-between hover:shadow-xl hover:bg-green-200 activeElement"
+                style={{ transition: "300ms ease-in-out" }}>
+                <span> Special Ocassion </span>
+                <input
+                  type="radio"
+                  id="Party"
+                  name="labels"
+                  value={"Party Grocery List"}
+                  onChange={(e) => {
+                    setLabel(e.target.value);
+                  }}
+                />
+              </label>
+              <span className=" h-auto text-md flex gap-2 items-center">
                 <input
                   type="text"
-                  name="timeLabel"
-                  id="timeLabel"
-                  value={timeline}
+                  name="customeLabel"
+                  id="customeLabel"
+                  placeholder="Type Custom Label"
+                  value={label}
                   onChange={(e) => {
-                    setTimeline(e.target.value);
+                    setLabel(e.target.value);
                   }}
-                  placeholder="Enter Custome TimeLine"
                   className=" focus:outline-none flex-1 h-9 border rounded-lg p-2 text-gray-400 text-sm font-normal"
                 />
                 <button
-                  type="submit"
+                  type="button"
                   className=" w-9 h-8 px-2 flex items-center justify-center rounded-lg bg-teal-950 text-white">
                   <span>
                     <IoMdAdd />
                   </span>
                 </button>
-              </form>
-            )}
-            {datePicker && (
-              <div className=" w-full flex flex-col p-1 h-auto items-start font-semibold">
-                <div className=" w-full flex p-1 rounded h-10 item-center justify-between gap-2 relative">
+              </span>
+            </div>
+          </li>
+
+          <li className=" w-full flex flex-col gap-1 items-start pb-1 my-2 border-b border-green-900">
+            <div className=" w-full flex flex-col h-auto items-start font-semibold ">
+              <div className=" w-full flex flex-col gap-1 items-start pb-1 my-2 border-b border-green-900">
+                <div className=" w-full flex rounded h-10 item-center justify-between gap-2 relative">
                   <span className=" w-max flex items-center justify-start">
-                    Effective Date:
+                    Date Prepared:
                   </span>
                   <p className=" flex-1 flex items-center justify-center font-semibold text-orange-900">
-                    {startDate.toDateString()}
+                    {preparedDate.toDateString()}
                   </p>
 
                   <button
                     type="button"
                     className=" w-9 h-8 px-2 flex items-center justify-center rounded-lg bg-gray-600 text-white"
                     onClick={() => {
-                      setShowStart(!showStart);
-                      setShowEnd(false);
+                      setPdate(!pDate);
                     }}>
                     <span>
                       <IoMdAdd />
                     </span>
                   </button>
-                  {showStart && (
+                  {pDate && (
                     <span className="z-10 w-full flex items-center justify-center absolute top-10 left-1 right-1">
-                      <Calendar value={startDate} onChange={onStart} />
-                    </span>
-                  )}
-                </div>
-                <div className=" w-full flex p-1 rounded h-10 item-center justify-between gap-2 relative">
-                  <span className=" w-max flex items-center justify-start">
-                    Expiring Date:
-                  </span>
-                  <p className=" flex-1 flex items-center justify-center font-semibold text-orange-900">
-                    {endDate.toDateString()}
-                  </p>
-                  <button
-                    type="button"
-                    className=" w-9 h-8 px-2 flex items-center justify-center rounded-lg bg-gray-600 text-white"
-                    onClick={() => {
-                      setShowEnd(!showEnd);
-                      setShowStart(false);
-                    }}>
-                    <span>
-                      <IoMdAdd />
-                    </span>
-                  </button>
-                  {showEnd && (
-                    <span className="z-10 w-full flex items-center justify-center absolute top-10 left-1 right-1">
-                      <Calendar value={endDate} onChange={onEnd} />
+                      <Calendar value={preparedDate} onChange={onPrepare} />
                     </span>
                   )}
                 </div>
               </div>
-            )}
+              <div className=" w-full flex rounded h-10 item-center justify-between gap-2 relative">
+                <span className=" w-max flex items-center justify-start">
+                  Add Due Date:
+                </span>
+                <p className=" flex-1 flex items-center justify-center font-semibold text-orange-900">
+                  {startDate.toDateString()}
+                </p>
+                <button
+                  type="button"
+                  className=" w-9 h-8 p-1 flex items-center justify-center rounded-lg bg-gray-600 text-white"
+                  onClick={() => {
+                    setShowStart(!showStart);
+                  }}>
+                  <span>
+                    <IoMdAdd />
+                  </span>
+                </button>
+                {showStart && (
+                  <span className="z-10 w-full flex items-center justify-center absolute top-10 left-1 right-1">
+                    <Calendar value={startDate} onChange={onStart} />
+                  </span>
+                )}
+              </div>
+              <div className=" w-full flex rounded h-10 item-center justify-between gap-2 relative">
+                <span className=" w-max flex items-center justify-start">
+                  Reminder:
+                </span>
+                <div className=" flex-1 flex items-center justify-center font-semibold text-orange-900">
+                  <input
+                    type="time"
+                    name="remindTime"
+                    id="remindTime"
+                    value={timeline}
+                    onChange={(e) => {
+                      setTimeline(
+                        moment(e.target.value, "HH:mm:ss").format("HH:mm:ss A")
+                      );
+                    }}
+                    placeholder="Enter Custome TimeLine"
+                    className=" focus:outline-none flex-1 h-9 border rounded-lg p-2 text-gray-400 text-sm font-normal"
+                  />
+                </div>
+                <button
+                  type="button"
+                  className=" w-9 h-8 px-2 flex items-center justify-center rounded-lg bg-gray-600 text-white">
+                  <span>
+                    <IoMdAdd />
+                  </span>
+                </button>
+              </div>
+            </div>
           </li>
 
           <li className=" w-full flex flex-col items-start pb-2 my-2 border-b border-green-900">
             <label
               htmlFor="amount"
               className="flex flex-row items-center gap-2 h-8 text-gray-500 font-bold">
-              {label === "Project budget"
-                ? "Estimated Amount"
-                : "Budget Amount"}
+              Amount for Shopping
             </label>
             <input
               type="number"
               name="amount"
               id="amount"
-              value={budgetIncome}
+              value={shoppingAmount}
               onChange={(e) => {
-                setBudgetIncome(e.target.value);
+                setShoppingAmount(e.target.value);
                 setIncomeError(false);
               }}
-              placeholder="Total Budget Amount"
+              placeholder="Total Amount for Shopping"
               className=" focus:outline-none w-full h-9 border rounded-lg p-2 text-gray-400 text-sm font-normal"
             />
-          </li>
-
-          <li className=" w-full flex flex-col items-start p-1 rounded my-2">
-            <label
-              htmlFor="expenses"
-              className="flex flex-row items-center gap-2 h-8 text-gray-500 font-bold">
-              Validity Period
-            </label>
-            <span className=" shadow-lg w-full h-10 border rounded-lg p-2 text-gray-400 text-sm font-normal">
-              {timeline === "Today" ? 1 : numberOfDays} day(s)
-            </span>
           </li>
         </ul>
       </div>
@@ -386,7 +307,7 @@ export default function BudgetInput(props) {
               <label
                 htmlFor="Label"
                 className="flex flex-row items-center gap-2 h-8 text-gray-500 font-bold">
-                Label
+                Item
               </label>
               <input
                 type="text"
@@ -404,7 +325,28 @@ export default function BudgetInput(props) {
               <label
                 htmlFor="saving"
                 className="flex flex-row items-center gap-2 h-8 text-gray-500 font-bold">
-                Amount
+                Quantity
+              </label>
+              <input
+                type="Number"
+                name="saving"
+                id="saving"
+                value={quantity}
+                onChange={(e) => {
+                  setQuantity(e.target.value);
+                }}
+                onKeyUp={() => {
+                  showAddButton();
+                }}
+                placeholder="Quantity to buy"
+                className=" focus:outline-none shadow-lg w-full h-12 border rounded-lg p-2 text-gray-400 text-sm font-normal"
+              />
+            </li>
+            <li className=" flex-1 flex flex-col items-start p-1 rounded my-2">
+              <label
+                htmlFor="saving"
+                className="flex flex-row items-center gap-2 h-8 text-gray-500 font-bold">
+                Price per Item ($)
               </label>
               <input
                 type="Number"
@@ -419,23 +361,19 @@ export default function BudgetInput(props) {
                 onKeyUp={() => {
                   showAddButton();
                 }}
-                placeholder="Allocated Amount"
                 className=" focus:outline-none shadow-lg w-full h-12 border rounded-lg p-2 text-gray-400 text-sm font-normal"
               />
             </li>
           </ul>
           {showAdd && (
             <button
-              type="submit"
+              type="button"
               className="activeElement mt-8 w-12 h-11 px-2 flex items-center justify-center rounded-xl bg-teal-950 text-white"
               onClick={() => {
                 commenceRendering();
-                setIncomeError(false);
-                setTotalSpend(() => {
-                  return Math.round(
-                    parseFloat(Number(totalSpend) + Number(Allocated))
-                  );
-                });
+                setTotalSpend(
+                  Number(totalSpend) + Number(Allocated * quantity)
+                );
                 setCount((prev) => prev + 1);
                 setItem("");
                 setAllocated(0);
@@ -463,10 +401,10 @@ export default function BudgetInput(props) {
           <div className="w-3/4 flex items-center justify-center gap-10 ">
             <span className=" text-green-600">
               Total Spent:
-              {`$${parseFloat(totalSpend)} out of $${budgetIncome}`}
+              {`${parseFloat(totalSpend)} out of ${shoppingAmount}`}
             </span>
             <span className=" text-black">
-              Amount Remaining: {`$${parseFloat(Balance)}`}
+              Amount Remaining: {parseFloat(Balance)}
             </span>
           </div>
         )}
@@ -488,29 +426,29 @@ export default function BudgetInput(props) {
           <button
             type="button"
             onClick={() => {
-              props.fullDispatch(
+              props.fullShopDispatch(
                 timeline,
                 label,
-                numberOfDays,
-                budgetIncome,
+                startDate.toDateString(),
+                shoppingAmount,
                 totalSpend,
                 Balance,
-                preparedDate,
-                startDate,
-                endDate,
+                detTotal,
+                totalLeft,
+                preparedDate.toDateString(),
                 [...detailsList]
               );
               setDetailslist([]);
             }}
             className="w-1/4 activeElement hover:bg-teal-950 hover:border-none hover:text-white border rounded-lg border-green-800 h-12 flex items-center justify-center p-2 font-bold text-gray-600">
-            <NavLink to={"../MyBudgets"} className={"w-full h-full"}>
+            <NavLink to={"../ShoppingList"} className={"w-full h-full"}>
               Save
             </NavLink>
           </button>
           <button
-            type="button"
+            type="reset"
             className="w-1/4 activeElement hover:bg-orange-500 hover:border-none hover:text-white border rounded-lg border-orange-500 h-12 flex items-center justify-center p-2 font-bold text-gray-600">
-            <NavLink to={"../MyBudgets"} className={"w-full h-full"}>
+            <NavLink to={"../ShoppingList"} className={"w-full h-full"}>
               Cancel
             </NavLink>
           </button>
@@ -552,7 +490,7 @@ function DetailRender(props) {
   };
 
   return (
-    <div className="flex w-full h-14 border border-gray-500 items-center px-1 rounded gap-2 my-4">
+    <div className="flex w-full h-14 border border-gray-500 items-center px-1 rounded gap-2 my-4 capitalize">
       <p className="flex-1 h-10 flex items-center justify-start gap-2 capitalize mr-2 border border-gray-500 px-2 rounded">
         <span className=" flex items-center justify-start gap-2">
           <FaTasks />
@@ -588,7 +526,7 @@ function DetailRender(props) {
       <p className="flex-1 h-10 flex items-center justify-start gap-2 capitalize mr-2 border border-gray-500 px-2 rounded">
         <span className=" flex items-center justify-start gap-2">
           <FaTasks />
-          Allocated Amount:
+          Price per Item:
         </span>
         {!editAmount && <strong className=" flex-1">{props.Allocated}</strong>}
         {editAmount && (
@@ -618,9 +556,18 @@ function DetailRender(props) {
         />
       </p>
       <span className="flex-1 flex items-center justify-center gap-2 capitalize">
-        Percentage:
+        Quantity: {props.quantity}
+      </span>
+      <span className="flex-1 flex items-center justify-center gap-2 capitalize">
+        Total Cost: {props.Allocated * props.quantity}
+      </span>
+      <span className="flex-1 flex items-center justify-center gap-2 capitalize">
+        Percentage Cost:
         <span>
-          {`${((props.Allocated / props.budgetIncome) * 100).toPrecision(3)} %`}
+          {`${(
+            ((props.Allocated * props.quantity) / props.shoppingAmount) *
+            100
+          ).toPrecision(3)} %`}
         </span>
       </span>
       <span className="w-max px-2 flex items-center justify-end gap-2 activeElement cursor-pointer">

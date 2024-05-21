@@ -1,23 +1,24 @@
 import { v4 as uuidv4 } from "uuid";
 import { Routes, Route, NavLink } from "react-router-dom";
 import Schedules from "../Home/Schedulepage/Schedules";
-import Budgets from "../Home/Budgetpage/Budgets";
-import Focus from "../Home/Focus";
+import BudgetsRenderfile from "../Home/Budgetpage/BudgetsRenderfile";
+import ChatFunction from "../Home/ChatFunction";
 import Settings from "../Home/Settings";
 import Habit from "../Home/Habit";
 import { RiCalendarScheduleFill } from "react-icons/ri";
 import { BsBank2 } from "react-icons/bs";
-import { MdCenterFocusStrong } from "react-icons/md";
+import { BsChatFill } from "react-icons/bs";
 import { IoSettingsSharp } from "react-icons/io5";
 import { CgPerformance } from "react-icons/cg";
+import moment from "moment";
 
 export default function Explore() {
   return (
     <NavigationBar>
       <Routes>
         <Route path="/*" element={<Schedules />} />
-        <Route path="/Budgets/*" element={<Budgets />} />
-        <Route path="/Focus/*" element={<Focus />} />
+        <Route path="/BudgetsRenderfile/*" element={<BudgetsRenderfile />} />
+        <Route path="/ChatFunction/*" element={<ChatFunction />} />
         <Route path="/Habit/*" element={<Habit />} />
         <Route path="/Settings/*" element={<Settings />} />
       </Routes>
@@ -34,13 +35,13 @@ function NavigationBar(props) {
     },
     {
       title: "Budgets",
-      path: "./Budgets",
+      path: "./BudgetsRenderfile",
       icons: <BsBank2 />,
     },
     {
-      title: "Focus Mode",
-      path: "./Focus",
-      icons: <MdCenterFocusStrong />,
+      title: "Start Conversasion",
+      path: "./ChatFunction",
+      icons: <BsChatFill />,
     },
     {
       title: "Habit Tracker",
@@ -49,35 +50,36 @@ function NavigationBar(props) {
     },
   ];
 
+  const currentTime = moment().format("HH:mm:ss A");
+  const currenDate = new Date().toDateString();
+
   return (
     <section className=" w-full h-full bg-teal-50 flex">
       <nav
-        className={`h-full w-60 flex flex-col gap-2 items-end  bg-teal-950 text-white top-0 z-10 + 
+        className={`h-full w-1/6 flex flex-col items-center justify-between  top-0 z-10 + 
               sm:w-14 sm:text-sm overflow-hidden
             }`}>
-        <div className="flex items-end sm:items-center justify-center w-full h-24 pb-4 border-b border-gray-500">
-          <NavLink
-            to={"/Profile"}
-            className={({ isActive }) => {
-              return (
-                "activeElement w-11/12 flex items-center justify-start" +
-                (isActive
-                  ? "bg-gray-600 text-white font-medium"
-                  : "bg-teal-950 text-gray-400")
-              );
-            }}>
-            <img
-              src="https://images.pexels.com/photos/3831645/pexels-photo-3831645.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-              alt="myPic"
-              className=" w-11 h-11 border rounded-full flex items-center justify-center mr-2"
-            />
-            <p className="flex flex-col items-start sm:hidden">
-              <span>username</span>
-              <span>user@gmail.com</span>
-            </p>
-          </NavLink>
+        <div className="flex flex-col items-center justify-center w-full h-96 border-b border-orange-400">
+          <div className="w-full flex-1 rounded-lg flex flex-col items-start gap-2">
+            <h2 className=" flex text-nowrap p-2 font-semibold">
+              Date: {currenDate}, {currentTime}
+            </h2>
+            <strong className=" px-2 text-xl ">Welcome, Mr. Christopher</strong>
+          </div>
+          <div className=" w-full flex items-center justify-center flex-1">
+            <NavLink
+              to={"/Profile"}
+              className={({ isActive }) => {
+                return (
+                  "activeElement w-1/2 h-12 rounded-full border border-slate-200 flex items-center justify-center shadow-xl hover:border-none hover:bg-gray-600 hover:text-white " +
+                  (isActive ? "bg-teal-50 font-medium" : "bg-teal-50")
+                );
+              }}>
+              View Profile
+            </NavLink>
+          </div>
         </div>
-        <div className=" w-11/12 h-3/4">
+        <div className=" w-full h-3/4 flex flex-col gap-2 items-center justify-center">
           {navItems.map((items) => {
             return (
               <NavLink
@@ -85,10 +87,10 @@ function NavigationBar(props) {
                 key={uuidv4()}
                 className={({ isActive }) => {
                   return (
-                    "activeElement w-full h-12 rounded-full rounded-e-md p-2 flex items-center justify-start gap-3 " +
+                    "activeElement w-5/6 h-14 rounded-full flex items-center justify-start pl-8 gap-2 shadow-xl hover:bg-green-100 hover:text-black " +
                     (isActive
-                      ? "bg-teal-50 text-black font-medium"
-                      : "bg-teal-950 text-white")
+                      ? "bg-green-700 font-medium text-white "
+                      : "bg-gray-50 ")
                   );
                 }}>
                 <strong className=" sm:text-xl">{items.icons}</strong>
@@ -97,15 +99,15 @@ function NavigationBar(props) {
             );
           })}
         </div>
-        <div className=" w-full h-1/4 border-t py-4 flex flex-col gap-3 items-center justify-center">
+        <div className=" w-full h-1/6 border-t border-orange-400 py-4 flex flex-col gap-3 items-center justify-end">
           <NavLink
             to={"./Settings"}
             className={({ isActive }) => {
               return (
-                "activeElement w-11/12 h-12 rounded-full p-2 flex items-center justify-center gap-2 shadow-xl " +
+                "activeElement w-11/12 h-12 rounded-full p-2 flex items-center justify-center gap-2 shadow-xl hover:bg-green-100 hover:text-black " +
                 (isActive
-                  ? "bg-teal-50 text-black font-medium"
-                  : "bg-teal-950 text-teal-50 border-2 border-orange-300")
+                  ? "bg-green-700 font-medium text-white"
+                  : "bg-gray-50")
               );
             }}>
             <span className=" sm:text-xl">

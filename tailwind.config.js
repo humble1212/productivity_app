@@ -21,6 +21,7 @@ module.exports = {
         pHgt: "85dvh",
         Hgt: "92.5%",
         DtInpHgt: "64dvh",
+        fcHgt: "28rem",
       },
       width: {
         cwdt: "40%",

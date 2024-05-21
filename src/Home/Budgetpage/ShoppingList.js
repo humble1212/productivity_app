@@ -16,25 +16,26 @@ import { TbUrgent } from "react-icons/tb";
 import { PiShareNetworkDuotone } from "react-icons/pi";
 import { GrPrint } from "react-icons/gr";
 import { SlTrash } from "react-icons/sl";
-import { FaTrash } from "react-icons/fa";
 import { TfiDownload } from "react-icons/tfi";
-import { AiOutlineEdit } from "react-icons/ai";
+import { FaRegCircle } from "react-icons/fa";
+import { FaCircleCheck } from "react-icons/fa6";
 import { FiMoreVertical } from "react-icons/fi";
+import { IoMdAdd } from "react-icons/io";
 
-export default function MyBudgets(props) {
+export default function ShoppingList(props) {
   const [Starred, setStarred] = useState(false);
   const [Expire, setExpire] = useState(false);
 
   const removeItem = (value) => {
-    props.setFdValues(
-      props.fDvalues.filter((item) => {
+    props.setFsValues(
+      props.fsvalues.filter((item) => {
         return item.id !== value.id;
       })
     );
   };
   function expiredCheck(value) {
-    props.setFdValues(
-      props.fDvalues.map((item) => {
+    props.setFsValues(
+      props.fsvalues.map((item) => {
         if (item.id === value.id) {
           return { ...item, Expired: !item.Expired };
         }
@@ -44,8 +45,8 @@ export default function MyBudgets(props) {
   }
 
   const starredCheck = (value) => {
-    props.setFdValues(
-      props.fDvalues.map((item) => {
+    props.setFsValues(
+      props.fsvalues.map((item) => {
         if (item.id === value.id) {
           return { ...item, Starred: !item.Starred };
         }
@@ -53,9 +54,10 @@ export default function MyBudgets(props) {
       })
     );
   };
+
   const hideCheck = (value) => {
-    props.setFdValues(
-      props.fDvalues.map((item) => {
+    props.setFsValues(
+      props.fsvalues.map((item) => {
         if (item.id === value.id) {
           return { ...item, Hide: !item.Hide };
         }
@@ -64,30 +66,28 @@ export default function MyBudgets(props) {
     );
   };
 
-  const todayDate = new Date().toDateString();
-
   const [status, setStatus] = useState("All");
   const [sortedTasks, setSortedTasks] = useState([]);
 
   useEffect(() => {
     switch (status) {
       case "expired":
-        setSortedTasks(props.fDvalues.filter((item) => item.Expired === true));
+        setSortedTasks(props.fsvalues.filter((item) => item.Expired === true));
         break;
       case "active":
-        setSortedTasks(props.fDvalues.filter((item) => item.Expired === false));
+        setSortedTasks(props.fsvalues.filter((item) => item.Expired === false));
         break;
       case "starred":
-        setSortedTasks(props.fDvalues.filter((item) => item.Starred === true));
+        setSortedTasks(props.fsvalues.filter((item) => item.Starred === true));
         break;
       case "unstarred":
-        setSortedTasks(props.fDvalues.filter((item) => item.Starred === false));
+        setSortedTasks(props.fsvalues.filter((item) => item.Starred === false));
         break;
       default:
-        setSortedTasks(props.fDvalues);
+        setSortedTasks(props.fsvalues);
         break;
     }
-  }, [props.fDvalues, status]);
+  }, [props.fsvalues, status]);
 
   return (
     <section className="flex w-full h-full p-1">
@@ -103,16 +103,16 @@ export default function MyBudgets(props) {
                   <IoNotifications />
                 </span>
                 <span className=" flex p-1 items-center">
-                  <FaTasks />: {props.totalfDvalues}
+                  <FaTasks />: {props.totalfsvalues}
                 </span>
                 <span className=" flex p-1 items-center">
-                  <MdDownloadDone />: {props.totalDone}
+                  <MdDownloadDone />: {props.totalpurchased}
                 </span>
                 <span className=" flex p-1 items-center">
-                  <MdOutlinePendingActions />: {props.totalPending}
+                  <MdOutlinePendingActions />: {props.totalunpurchased}
                 </span>
                 <span className=" flex p-1 items-center">
-                  <TbUrgent />: {props.totalUrgent}
+                  <TbUrgent />: {props.totalImportant}
                 </span>
               </li>
 
@@ -140,11 +140,11 @@ export default function MyBudgets(props) {
             </ul>
             <div className=" w-full flex items-center justify-center p-1 absolute bottom-1 left-1 right-1 ">
               <NavLink
-                to={"../BudgetInput/"}
+                to={"../ShoppingInput/"}
                 className={
-                  "activeElement hover:bg-teal-950 hover:border-none hover:text-white border rounded-full border-green-600 h-10  font-bold text-gray-600  w-3/4 flex items-center justify-center p-2"
+                  "activeElement hover:bg-teal-950 hover:border-none hover:text-white border rounded-full border-green-600 h-10  font-bold text-gray-600  w-3/5 flex items-center justify-center p-2"
                 }>
-                Prepare New Budget +
+                Prepare New List +
               </NavLink>
             </div>
           </div>
@@ -161,7 +161,7 @@ export default function MyBudgets(props) {
                   value.Expired ? " opacity-50" : " opacity-100"
                 }`}>
                 <header className="w-full flex flex-col items-start justify-center gap-3 p-2 bg-gray-50">
-                  <div className=" w-full flex items-center justify-between p-2 h-11 relative ">
+                  <div className=" w-full flex items-center justify-between p-2 h-11 relative">
                     {value.Hide && (
                       <div className="header--shadow absolute right-0 top-12 w-max h-auto z-10 bg-gray-600 text-white rounded-2xl p-2 border font-semibold">
                         <span className=" flex h-8 px-2 item-center justify-between gap-2 text-sm">
@@ -177,7 +177,7 @@ export default function MyBudgets(props) {
                               <span>Saved: </span>
                               <span>
                                 {parseFloat(
-                                  (value.Balance / value.budgetIncome) * 100
+                                  (value.Balance / value.shoppingAmount) * 100
                                 ).toPrecision(3)}
                                 %
                               </span>
@@ -186,7 +186,8 @@ export default function MyBudgets(props) {
                               <span>Spent:</span>
                               <span>
                                 {parseFloat(
-                                  (value.totalSpend / value.budgetIncome) * 100
+                                  (value.totalSpend / value.shoppingAmount) *
+                                    100
                                 ).toPrecision(3)}
                                 %
                               </span>
@@ -197,7 +198,7 @@ export default function MyBudgets(props) {
                           <span>Remarks:</span>
                           <span>
                             {parseFloat(
-                              (value.Balance / value.budgetIncome) * 100
+                              (value.Balance / value.shoppingAmount) * 100
                             ).toPrecision(3) < 10
                               ? "Saving too small"
                               : "Fair Amount Saved"}
@@ -205,13 +206,14 @@ export default function MyBudgets(props) {
                         </div>
                       </div>
                     )}
-                    <div className=" w-max flex justify-start gap-10 items-center">
-                      <strong className="w-max flex items-center justify-start text-lg">
-                        {`TimeLine: ${value.timeline}`}
+                    <div className=" w-max flex justify-start gap-10 items-center ">
+                      <strong className="w-max flex items-center justify-start gap-2">
+                        <span>{`Reminder Date: ${value.startDate},`}</span>
+                        <span>{`Time: ${value.timeline}`}</span>
                       </strong>
-                      <strong className="w-max flex items-end justify-end text-md">
+                      <span className="w-max flex items-end justify-end text-md">
                         {`Label: ${value.label}`}
-                      </strong>
+                      </span>
                     </div>
                     <div className=" flex-1 flex items-center justify-center gap-2 h-14">
                       <span className="w-max px-2 flex items-center justify-end gap-2 activeElement cursor-pointer">
@@ -236,7 +238,7 @@ export default function MyBudgets(props) {
                           value.Starred
                             ? "w-max px-2 bg-teal-950 text-white"
                             : "w-8 hover:bg-gray-300"
-                        }  h-8 rounded-full flex items-center justify-center activeElement`}>
+                        }  h-8 rounded-full flex items-center justify-center activeElement `}>
                         <span
                           onClick={() => {
                             setStarred(!Starred);
@@ -265,14 +267,14 @@ export default function MyBudgets(props) {
                         <GrPrint />
                       </span>
                       <span
-                        className=" w-8 h-8 rounded-full flex items-center justify-center activeElement hover:bg-red-400 hover:text-white text-red-500"
+                        className=" w-8 h-8 rounded-full flex items-center justify-center activeElement hover:bg-red-400 hover:text-white"
                         onClick={() => {
                           removeItem(value);
                         }}>
                         <SlTrash />
                       </span>
                       <span
-                        className=" w-8 h-8 rounded-full flex items-center justify-center activeElement hover:bg-gray-300"
+                        className=" w-8 h-8 rounded-full flex items-center justify-center activeElement text-gray-700 text-lg hover:bg-gray-300"
                         onClick={() => {
                           hideCheck(value);
                         }}>
@@ -280,55 +282,51 @@ export default function MyBudgets(props) {
                       </span>
                     </div>
                   </div>
-                  <div className=" w-full flex items-center justify-between p-2 h-auto border-b border-orange-300">
-                    <div className="flex-1 flex items-center justify-start gap-4">
-                      <span className=" flex items-center justify-start w-max gap-1 p-2 font-semibold">
-                        <span>From: </span>
-                        {`${
-                          value.timeline === "Today"
-                            ? todayDate
-                            : value.startDate
-                        }`}
-                      </span>
-                      <span className=" flex items-center justify-start gap-1 w-max p-2 rounded-lg font-semibold">
-                        <span>To: </span>
-                        {`${
-                          value.timeline === "Today" ? todayDate : value.endDate
-                        }`}
-                      </span>
-                      <span className=" flex items-center justify-start w-max gap-1 p-2 rounded-lg font-semibold">
-                        <span>Valid for: </span>
-                        {`${
-                          value.timeline === "Today" ? 1 : value.numberOfDays
-                        }`}
-                        <span> day(s)</span>
-                      </span>
-                    </div>
-
+                  <div className=" w-full flex items-center justify-center gap-2 p-2 h-auto border-b border-orange-300">
+                    <span className="w-max flex items-center justify-start p-2 font-semibold">
+                      Allocated Amount: {`$${value.shoppingAmount}`}
+                    </span>
+                    <span className="w-max flex items-center justify-start p-2 font-semibold">
+                      Total Spent: {`$${value.totalSpend}`}
+                    </span>
+                    <span className="w-max flex items-center justify-start p-2 font-semibold">
+                      Balance: {`$${value.Balance}`}
+                    </span>
                     <div className="flex-1 flex items-center justify-end gap-2">
-                      <span className=" flex items-center justify-end w-max p-2 font-semibold">
-                        Total Income: {`$${value.budgetIncome}`}
-                      </span>
-                      <span className=" flex items-center justify-end w-max p-2 font-semibold">
-                        Amount Saved: {`$${value.Balance}`}
-                      </span>
-                      <span className=" flex items-center justify-end w-max p-2 font-semibold">
-                        Amount Spent: {`$${value.totalSpend}`}
-                      </span>
+                      <span>List: {value.detTotal}</span>
+                      <p className="flex gap-1 items-center justify-start">
+                        Purchased:
+                        <span>
+                          {
+                            value.detailsList.filter(
+                              (item) => item.purchasedItems === true
+                            ).length
+                          }
+                        </span>
+                      </p>
+                      <p className="flex gap-1 items-center justify-start">
+                        Left:
+                        <span>
+                          {value.detTotal -
+                            value.detailsList.filter(
+                              (item) => item.purchasedItems === true
+                            ).length}
+                        </span>
+                      </p>
                     </div>
                   </div>
                 </header>
 
-                <div className=" w-full max-h-mpHgt bg-gray-50 overflow-auto text-black p-1">
+                <div className=" w-full flex flex-col gap-2 max-h-mpHgt bg-gray-50 overflow-auto text-black px-1 py-4 relative">
                   {value.detailsList.map((Data) => {
                     return (
-                      <ReturnComponent
+                      <RenderFinal
                         key={Data.id}
                         {...Data}
                         Data={Data}
                         value={value}
-                        setFdValues={props.setFdValues}
-                        fDvalues={props.fDvalues}
+                        setFsValues={props.setFsValues}
+                        fsvalues={props.fsvalues}
                       />
                     );
                   })}
@@ -342,29 +340,10 @@ export default function MyBudgets(props) {
   );
 }
 
-function ReturnComponent(props) {
-  const [editItem, setEditItem] = useState(false);
-  const [editAmount, setEditAmount] = useState(false);
-
-  const removeTask = () => {
-    props.setFdValues(
-      props.fDvalues.map((prev) => {
-        if (prev.id === props.value.id) {
-          return {
-            ...prev,
-            detailsList: prev.detailsList.filter((items) => {
-              return items.id !== props.Data.id;
-            }),
-          };
-        }
-        return prev;
-      })
-    );
-  };
-
-  const onRenameItem = (newItem) => {
-    props.setFdValues(
-      props.fDvalues.map((prev) => {
+function RenderFinal(props) {
+  const completeFunction = () => {
+    props.setFsValues(
+      props.fsvalues.map((prev) => {
         if (prev.id === props.value.id) {
           return {
             ...prev,
@@ -372,7 +351,29 @@ function ReturnComponent(props) {
               if (items.id === props.Data.id) {
                 return {
                   ...items,
-                  item: newItem,
+                  purchasedItems: !items.purchasedItems,
+                };
+              }
+
+              return items;
+            }),
+          };
+        }
+        return prev;
+      })
+    );
+  };
+  const expandFunction = () => {
+    props.setFsValues(
+      props.fsvalues.map((prev) => {
+        if (prev.id === props.value.id) {
+          return {
+            ...prev,
+            detailsList: prev.detailsList.map((items) => {
+              if (items.id === props.Data.id) {
+                return {
+                  ...items,
+                  expand: !items.expand,
                 };
               }
               return items;
@@ -383,116 +384,186 @@ function ReturnComponent(props) {
       })
     );
   };
-  const newAllAmount = (newAmount) => {
-    props.setFdValues(
-      props.fDvalues.map((prev) => {
-        if (prev.id === props.value.id) {
-          return {
-            ...prev,
-            detailsList: prev.detailsList.map((items) => {
-              if (items.id === props.Data.id) {
-                return { ...items, Allocated: newAmount };
-              }
-              return items;
-            }),
-          };
-        }
-        return prev;
-      })
-    );
-  };
+
+  const [showExpandButton, setShowExpandButton] = useState(false);
 
   return (
     <div
-      className="flex w-full border-b border-gray-200 items-center p-1 gap-2 my-2 hover:bg-gray-500 hover:text-white hover:rounded hover:p-2"
+      className={`flex footer--shadow w-full border border-gray-200 items-center px-1 py-2 gap-2 mt-3 relative hover:shadow-lg + ${
+        props.purchasedItems ? " opacity-50 line-through line-" : "opacity-100"
+      }`}
       key={props.id}
       style={{
         transition: "500ms ease-in-out",
+      }}
+      onMouseEnter={() => {
+        setShowExpandButton(true);
+      }}
+      onMouseLeave={() => {
+        setShowExpandButton(false);
       }}>
-      <p className="flex-1 h-10 flex items-center justify-start gap-2 capitalize px-2 rounded">
-        <span className=" flex items-center justify-start gap-2">
-          {props.count}.
-        </span>
-        {!editItem && <strong className=" flex-1">{props.item}</strong>}
-        {editItem && (
-          <form
-            action="post"
-            className=" flex-1"
-            onSubmit={(e) => {
-              e.preventDefault();
-              setEditItem(!editItem);
-            }}>
-            <input
-              type="text"
-              name="edittask"
-              id="edittask"
-              value={props.item}
-              onChange={(e) => {
-                onRenameItem(e.target.value);
-              }}
-              className=" w-5/6 p-1 indent-2 rounded border focus:outline-dashed font-medium bg-transparent text-white"
-            />
-          </form>
-        )}
-        <AiOutlineEdit
+      {showExpandButton && (
+        <button
+          className="z-20 cursor-pointer activeElement absolute left-1/2 bottom-full bg-orange-500 text-white hover:bg-slate-800 shadow-2xl rounded-md h-1 hover:h-6 hover:px-3 overflow-hidden w-max"
           onClick={() => {
-            setEditItem(!editItem);
+            expandFunction();
           }}
-        />
-      </p>
+          style={{
+            transition: "400ms ease-in-out",
+          }}>
+          Expand
+        </button>
+      )}
+      <div className=" flex-1 flex items-center justify-start gap-1">
+        <span
+          className="w-max h-10 flex items-center justify-start gap-2 capitalize px-2 rounded"
+          onClick={() => {
+            completeFunction();
+          }}>
+          {!props.purchasedItems && <FaRegCircle />}
+          {props.purchasedItems && <FaCircleCheck />}
+        </span>
+        <p className="flex-1 h-10 flex items-center justify-start gap-2 capitalize px-2 rounded">
+          <span className=" flex items-center justify-start gap-2">
+            {props.count}.
+          </span>
+          <strong>{props.item}</strong>
+        </p>
+      </div>
       <p className="flex-1 h-10 flex items-center justify-center gap-2 capitalize rounded">
         <span>
           <GiPayMoney />
         </span>
-        <span>Allocated Amount:</span>
-        {!editAmount && <span>{`$${props.Allocated}`}</span>}
-        {editAmount && (
-          <form
-            action="post"
-            className=" flex-1"
-            onSubmit={(e) => {
-              e.preventDefault();
-              setEditAmount(!editAmount);
-            }}>
-            <input
-              type="text"
-              name="edittask"
-              id="edittask"
-              value={props.Allocated}
-              onChange={(e) => {
-                newAllAmount(e.target.value);
-              }}
-              className=" w-5/6 p-1 indent-2 rounded border focus:outline-dashed font-medium bg-transparent text-white"
-            />
-          </form>
-        )}
-        <AiOutlineEdit
-          onClick={() => {
-            setEditAmount(!editAmount);
-          }}
-        />
+        <span>Price per item:</span>
+        <span>{`$${props.Allocated}`}</span>
       </p>
+      <span className="flex-1 flex items-center justify-center gap-2 capitalize">
+        Quantity: {props.quantity}
+      </span>
+
       <span className="flex-1 flex items-center justify-start gap-2">
-        <span>{`$${props.Allocated} out of $${props.budgetIncome}`}</span>
+        Total Cost:
+        <span>
+          {`$${props.Allocated * props.quantity} out of $${
+            props.shoppingAmount
+          }`}
+        </span>
       </span>
       <span className="flex-1 flex items-center justify-end gap-2 capitalize">
         <strong
           className="bg-orange-500 text-white text-sm p-1 text-left text-nowrap truncate"
           style={{
-            width: `${
-              3 + ((props.Allocated / props.budgetIncome) * 100) / 10
+            width: ` ${
+              3 +
+              (((props.Allocated * props.quantity) / props.shoppingAmount) *
+                100) /
+                10
             }rem`,
           }}>
-          {`${((props.Allocated / props.budgetIncome) * 100).toPrecision(3)} %`}
+          {`${(
+            ((props.Allocated * props.quantity) / props.shoppingAmount) *
+            100
+          ).toPrecision(3)} %`}
         </strong>
       </span>
-      <span className="w-max px-2 flex items-center justify-end gap-2 activeElement cursor-pointer">
+      <div className="expand--css bg-gray-700 rounded-lg">
+        {props.expand && (
+          <ExtentList
+            item={props.item}
+            Data={props.Data}
+            value={props.value}
+            setFsValues={props.setFsValues}
+            fsvalues={props.fsvalues}
+            expand={props.expand}
+          />
+        )}
+      </div>
+    </div>
+  );
+}
+
+function ExtentList({ item, Data }) {
+  const [height, setHeight] = useState(0);
+  const [addItem, setAddItem] = useState("");
+  const [itemAmount, setItemAmount] = useState("");
+  const [appendValues, setAppendValues] = useState([]);
+
+  const addMoreList = (addItem, itemAmount) => {
+    const addList = {
+      id: Data.id,
+      addItem: addItem,
+      itemAmount: itemAmount,
+      purchasedSub: false,
+    };
+    setAppendValues([...appendValues, addList]);
+    setAddItem("");
+    setItemAmount("");
+  };
+
+  return (
+    <div className="flex flex-col gap-1  w-auto h-auto p-2 text-white rounded-lg">
+      <header className="w-full h-auto flex items-center justify-between border-b border-orange-300">
+        <p>
+          Lists under <strong>{item}</strong>
+        </p>
         <span
-          className="w-max p-2 rounded-lg hover:bg-gray-200 hover:text-black flex items-center justify-end gap-2 text-orange-400 activeElement cursor-pointer border"
-          onClick={removeTask}>
-          <FaTrash />
+          className=" w-6 h-6 rounded-full flex items-center justify-center activeElement text-lg hover:bg-gray-300 hover:text-black m-1 "
+          onClick={() => {
+            setHeight(height === 0 ? "auto" : 0);
+          }}>
+          <FiMoreVertical />
         </span>
-      </span>
+      </header>
+      <div
+        className=" overflow-hidden flex flex-col gap-2 "
+        style={{
+          height: `${height}`,
+          transition: "400ms ease-in-out",
+        }}>
+        <div className="flex w-full items-center justify-between h-11 gap-1 p-1">
+          <input
+            type="text"
+            placeholder="Item"
+            value={addItem}
+            onChange={(e) => {
+              setAddItem(e.target.value);
+            }}
+            className=" focus:outline-none flex-1 h-8 border rounded-md p-2 text-gray-400 text-sm font-normal"
+          />
+          <input
+            type="number"
+            placeholder="Amount"
+            value={itemAmount}
+            onChange={(e) => {
+              setItemAmount(e.target.value);
+            }}
+            className=" focus:outline-none flex-1 h-8 border rounded-md p-2 text-gray-400 text-sm font-normal"
+          />
+          <button
+            type="button"
+            className=" w-9 h-8 px-2 flex items-center justify-center rounded-lg bg-teal-50 text-black"
+            onClick={() => {
+              addMoreList(addItem, itemAmount);
+            }}>
+            <span>
+              <IoMdAdd />
+            </span>
+          </button>
+        </div>
+        <ul className=" w-full h-auto max-h-96 overflow-auto">
+          {[...appendValues].map((value) => {
+            if (value.id === Data.id) {
+              return (
+                <li className="flex w-full items-center justify-between h-11 gap-1">
+                  <p>{value.addItem}</p>
+                  <p>{value.itemAmount}</p>
+                </li>
+              );
+            }
+            return value;
+          })}
+        </ul>
+      </div>
     </div>
   );
 }

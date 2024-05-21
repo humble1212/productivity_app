@@ -43,12 +43,12 @@ export default function App() {
 function AppHeader(props) {
   const navMeniLinks = [
     {
-      title: "Home",
+      title: "Welcome",
       path: "/Homepage",
       icons: <IoHomeSharp />,
     },
     {
-      title: "Explore",
+      title: "Home",
       path: "/Explore",
       icons: <MdExplore />,
     },
@@ -112,6 +112,22 @@ function AppHeader(props) {
             );
           })}
         </div>
+        <NavLink
+          to={"/Profile"}
+          className={({ isActive }) => {
+            return (
+              "activeElement w-max flex items-center justify-end" +
+              (isActive
+                ? "bg-gray-600 text-white font-medium"
+                : "bg-teal-950 text-gray-400")
+            );
+          }}>
+          <img
+            src="https://images.pexels.com/photos/3831645/pexels-photo-3831645.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+            alt="myPic"
+            className=" w-10 h-10 border rounded-full flex items-center justify-center mr-2"
+          />
+        </NavLink>
       </header>
       <section className="h-mpHgt flex-1">{props.children}</section>
     </main>

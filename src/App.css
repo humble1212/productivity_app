@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 /*# sourceMappingURL=App.css.map */
+
 .activeElement,
 .more--menu {
   transition: 0.5s ease-in-out;
@@ -77,6 +78,9 @@
 .footer--shadow {
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
+.header--shadow {
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+}
 
 @keyframes animatePages {
   0% {
@@ -113,8 +117,8 @@
 .profile-styles {
   position: absolute;
   top: 5%;
-  left: 15%;
-  right: 15%;
+  left: 1%;
+  right: 1%;
   height: auto;
   display: flex;
   justify-items: center;
@@ -124,4 +128,34 @@
 
 .b--input::-webkit-scrollbar {
   display: none;
+}
+.c-max-hgt {
+  max-height: 28rem;
+}
+
+.adjust--up:hover:before,
+.adjust--down:hover:before {
+  position: absolute;
+  left: -60%;
+  color: black;
+  font-size: 13px;
+  text-wrap: nowrap;
+  width: max-content;
+}
+.adjust--up:hover:before {
+  content: "Increase Restperiod";
+  bottom: 90%;
+}
+.adjust--down:hover:before {
+  content: "Reduce Restperiod";
+  top: 90%;
+}
+.input-styling-css :is(input:focus, select:focus) {
+  outline: 0.5px solid rgba(255, 99, 71, 0.5);
+}
+.expand--css {
+  position: absolute;
+  top: 10px;
+  left: 35%;
+  z-index: 20;
 }
